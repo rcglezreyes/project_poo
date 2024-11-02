@@ -1,3 +1,4 @@
+from typing import Any
 from models.category import Category
 
 
@@ -18,3 +19,7 @@ class Product:
         self.stock = stock
         self.category = category
         self.image_url = image_url
+        
+    def __str__(self):
+        return f' \nID: {self.product_id} \nName: {self.name} \nDescription: {self.description} \nPrice: {self.price}, Stock: {self.stock}, Category: {self.category}, Image URL: {self.image_url}'
+    

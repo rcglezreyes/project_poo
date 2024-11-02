@@ -7,3 +7,6 @@ class PaymentMethod:
         self.payment_id = payment_id
         self.method_name = method_name
         self.details = details
+        
+    def __str__(self):
+        return f'Payment ID: {self.payment_id}, Method Name: {self.method_name}, Details: {self.details}'

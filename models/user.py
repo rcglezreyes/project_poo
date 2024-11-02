@@ -19,3 +19,6 @@ class User:
         self.phone = phone
         self.role = role
         self.registration_date = registration_date
+        
+    def __str__(self):
+        return f' \nUser ID: {self.user_id} \nUsername: {self.username} \nEmail: {self.email} \nPhone: {self.phone} \nRole: {self.role} \nRegistration Date: {self.registration_date}'
