@@ -20,3 +20,6 @@ class PhysicalProduct(Product):
     def mostrar_detalle(self) -> str:
         """Extiende el método de la clase base con detalles específicos."""
         return f"Producto Fisico: \n{super().mostrar_detalle()} \nPeso: {self.weight}kg \nDimensiones: {self.height}x{self.width}x{self.depth}cm"
+    
+    def calcular_precio(self) -> float:
+        return round(self.price * 1.19, 2)  # Precio base + 10% de impuestos

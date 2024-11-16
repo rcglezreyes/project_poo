@@ -18,3 +18,6 @@ class DigitalProduct(Product):
     def mostrar_detalle(self) -> str:
         """Extiende el método de la clase base con detalles específicos."""
         return f"Producto Digital: \n{super().mostrar_detalle()} \nURL del archivo: {self.file_url} \nFormato: {self.format} \nTamaño: {self.size}MB"
+    
+    def calcular_precio(self) -> float:
+        return round(self.price * 1.07, 2)
