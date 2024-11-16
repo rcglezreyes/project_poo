@@ -8,10 +8,42 @@ class PhysicalProduct(Product):
 
     def __init__(self, product_id, name, description, price, stock, category, image_url, weight, height, width, depth):
         super().__init__(product_id, name, description, price, stock, category, image_url)
-        self.weight = weight
-        self.height = height
-        self.width = width
-        self.depth = depth
+        self.__weight = weight
+        self.__height = height
+        self.__width = width
+        self.__depth = depth
+        
+    @property
+    def weight(self) -> float:
+        return self.__weight
+    
+    @weight.setter
+    def weight(self, weight: float) -> None:
+        self.__weight = weight
+        
+    @property
+    def height(self) -> float:
+        return self.__height
+    
+    @height.setter
+    def height(self, height: float) -> None:
+        self.__height = height
+        
+    @property
+    def width(self) -> float:
+        return self.__width
+    
+    @width.setter
+    def width(self, width: float) -> None:
+        self.__width = width
+        
+    @property
+    def depth(self) -> float:
+        return self.__depth
+    
+    @depth.setter
+    def depth(self, depth: float) -> None:
+        self.__depth = depth
         
     def __str__(self):
         super_str = super().__str__()

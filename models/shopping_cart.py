@@ -10,10 +10,42 @@ class ShoppingCart:
     total: float                  # Total acumulado del carrito
 
     def __init__(self, cart_id, client, products, total):
-        self.cart_id = cart_id
-        self.client = client
-        self.products = products
-        self.total = total
+        self.__cart_id = cart_id
+        self.__client = client
+        self.__products = products
+        self.__total = total
+        
+    @property
+    def cart_id(self):
+        return self.__cart_id
+    
+    @cart_id.setter
+    def cart_id(self, value):
+        self.__cart_id = value
+        
+    @property
+    def client(self):
+        return self.__client
+    
+    @client.setter
+    def client(self, value):
+        self.__client = value
+    
+    @property
+    def products(self):
+        return self.__products
+    
+    @products.setter
+    def products(self, value):
+        self.__products = value
+    
+    @property
+    def total(self):
+        return self.__total
+    
+    @total.setter
+    def total(self, value):
+        self.__total = value
         
     @singledispatchmethod
     def agregar_producto(self, producto):

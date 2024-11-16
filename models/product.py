@@ -39,8 +39,57 @@ class Product(ABC):
             raise ValueError('El precio no puede ser negativo.')
         else:
             self.__price = price
+            
+    @property
+    def stock(self) -> int:
+        return self.__stock
     
+    @stock.setter
+    def stock(self, stock: int) -> None:
+        if stock < 0:
+            raise ValueError('El stock no puede ser negativo.')
+        else:
+            self.__stock = stock
+            
+    @property
+    def name(self) -> str:
+        return self.__name
     
+    @name.setter
+    def name(self, name: str) -> None:
+        self.__name = name
+        
+    @property
+    def description(self) -> str:
+        return self.__description
+    
+    @description.setter
+    def description(self, description: str) -> None:
+        self.__description = description
+        
+    @property
+    def category(self) -> Category:
+        return self.__category
+    
+    @category.setter
+    def category(self, category: Category) -> None:
+        self.__category = category
+        
+    @property
+    def image_url(self) -> str:
+        return self.__image_url
+    
+    @image_url.setter
+    def image_url(self, image_url: str) -> None:
+        self.__image_url = image_url
+    
+    @property
+    def product_id(self) -> int:
+        return self.__product_id
+    
+    @product_id.setter
+    def product_id(self, product_id: int) -> None:
+        self.__product_id = product_id
         
     def __str__(self):
         return f' \nID: {self.product_id} \nNombre: {self.name} \nDescripcion: {self.description} \nPrecio: {self.price}, Stock: {self.stock}, Categoria: {self.category}, Imagen URL: {self.image_url}'

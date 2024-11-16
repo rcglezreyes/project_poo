@@ -10,9 +10,33 @@ class Client(User):
 
     def __init__(self, user_id, username, email, password, phone, role, registration_date, address, payment_methods,preferences):
         super().__init__(user_id, username, email, password, phone, role, registration_date)
-        self.address = address
-        self.payment_methods = payment_methods
-        self.preferences = preferences
+        self.__address = address
+        self.__payment_methods = payment_methods
+        self.__preferences = preferences
+        
+    @property
+    def address(self) -> str:
+        return self.__address
+    
+    @address.setter
+    def address(self, address: str) -> None:
+        self.__address = address
+        
+    @property
+    def payment_methods(self) -> list[PaymentMethod]:
+        return self.__payment_methods
+    
+    @payment_methods.setter
+    def payment_methods(self, payment_methods: list[PaymentMethod]) -> None:
+        self.__payment_methods = payment_methods
+        
+    @property
+    def preferences(self) -> list[str]:
+        return self.__preferences
+    
+    @preferences.setter
+    def preferences(self, preferences: list[str]) -> None:
+        self.__preferences = preferences
         
     def __str__(self):
         super_str = super().__str__()

@@ -7,9 +7,33 @@ class DigitalProduct(Product):
 
     def __init__(self, product_id, name, description, price, stock, category, image_url, file_url, format, size):
         super().__init__(product_id, name, description, price, stock, category, image_url)
-        self.file_url = file_url
-        self.format = format
-        self.size = size
+        self.__file_url = file_url
+        self.__format = format
+        self.__size = size
+        
+    @property
+    def file_url(self) -> str:
+        return self.__file_url
+    
+    @file_url.setter
+    def file_url(self, file_url: str) -> None:
+        self.__file_url = file_url
+        
+    @property
+    def format(self) -> str:
+        return self.__format
+    
+    @format.setter
+    def format(self, format: str) -> None:
+        self.__format = format
+        
+    @property
+    def size(self) -> float:
+        return self.__size
+    
+    @size.setter
+    def size(self, size: float) -> None:
+        self.__size = size
         
     def __str__(self):
         super_str = super().__str__()
