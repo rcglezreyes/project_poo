@@ -14,3 +14,7 @@ class DigitalProduct(Product):
     def __str__(self):
         super_str = super().__str__()
         return f'{super_str} \nFile URL: {self.file_url} \nFormat: {self.format} \nSize: {self.size}'
+    
+    def mostrar_detalle(self) -> str:
+        """Extiende el método de la clase base con detalles específicos."""
+        return f"Producto Digital: \n{super().mostrar_detalle()} \nURL del archivo: {self.file_url} \nFormato: {self.format} \nTamaño: {self.size}MB"

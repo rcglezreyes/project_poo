@@ -16,3 +16,7 @@ class PhysicalProduct(Product):
     def __str__(self):
         super_str = super().__str__()
         return f'{super_str} \nWeight: {self.weight} \nHeight: {self.height} \nWidth: {self.width} \nDepth: {self.depth}'
+    
+    def mostrar_detalle(self) -> str:
+        """Extiende el método de la clase base con detalles específicos."""
+        return f"Producto Fisico: \n{super().mostrar_detalle()} \nPeso: {self.weight}kg \nDimensiones: {self.height}x{self.width}x{self.depth}cm"

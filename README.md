@@ -191,3 +191,177 @@ class Client(User):
         self.preferences = preferences
 
 ```
+
+### Implementación de polimorfismo
+- **main.py**:
+Se puede observar en el archivo ```main.py``` como se implementa el método:
+```
+def mostrar_detalles_producto(producto: Product)
+      print(producto.mostrar_detalle())
+```
+Dicho método recibe como argumento un ```Product``` que puede ser genérico (de cualquiera de los tipos definidos), al invocar el método tal como ocurre en este archivo ```main.py```:
+```
+# Crear instancias con todos los argumentos
+producto_fisico = PhysicalProduct(
+    1, "Laptop", "Laptop física de alta calidad", 1000.0, 5, "Electrónica", "https://example.com/laptop.jpg", 2.5, 30, 20, 5
+)
+
+producto_digital = DigitalProduct(
+    2, "E-Book", "E-Book de programación en Python", 20.0, 100, "Libros", "https://example.com/ebook.jpg", "https://ebook.com/file", "PDF", 1.2
+)
+
+# Usar la función polimórfica
+print()
+print('-----MOSTRANDO EJEMPLO DE POLIMORFISMO Y SOBREESCRITURA DE METODOS-----')
+mostrar_detalles_producto(producto_fisico)  # Llama a PhysicalProduct.mostrarDetalle()
+print('---------------------------------')
+mostrar_detalles_producto(producto_digital) # Llama a DigitalProduct.mostrarDetalle()
+print()
+```
+Se puede observar como recibe cualquiera de estos dos tipos de productos y el resultado mostrado en consola sería:
+
+```
+-----MOSTRANDO EJEMPLO DE POLIMORFISMO Y SOBREESCRITURA DE METODOS-----
+Producto Fisico: 
+ID: 1 
+Nombre: Laptop 
+Precio: 1000.0 
+Peso: 2.5kg 
+Dimensiones: 30x20x5cm
+---------------------------------
+Producto Digital: 
+ID: 2 
+Nombre: E-Book 
+Precio: 20.0 
+URL del archivo: https://ebook.com/file 
+Formato: PDF 
+Tamaño: 1.2MB
+```
+
+Como se puede observar, en Python como lenguaje orientado a objetos, el polimorfismo tiene un comportamiento exactamente igual a cualquier otro lenguaje con este mismo paradigma.
+
+### Sobrecarga de Métodos
+- **Clase Product**:
+
+La sobrecarga de métodos en Python se implementa usando el decorador ```@singledispatchmethod``` de la librería ```functools```, solo se tiene que importar:
+```from functools import singledispatchmethod```.
+
+Este decorador permite definir múltiples versiones de un método basándose en los tipos de los argumentos.
+El método base se define como el comportamiento por defecto (cuando no hay coincidencia de tipos).
+
+El método base ```agregar_producto```, si no se encuentra una versión registrada para los argumentos proporcionados, lanza un error ```NotImplementedError```.
+
+```
+class ShoppingCart:
+    ...
+        
+    @singledispatchmethod
+    def agregar_producto(self, producto):
+        """Método base (default) para agregar productos."""
+        raise NotImplementedError("Tipo no soportado para agregarProducto.")
+
+    @agregar_producto.register
+    def _(self, producto: Product):
+        """Agregar un producto por objeto Producto."""
+        self.products.append(producto)
+        print(f"Producto '{producto.name}' agregado al carrito.")
+
+    @agregar_producto.register
+    def _(self, product_id: int, name: str):
+        """Agregar un producto por ID y nombre."""
+        producto = Product(product_id, name, 0.0)  
+        self.products.append(producto)
+        print(f"Producto con ID {product_id} y nombre '{name}' agregado al carrito.")
+
+    @agregar_producto.register
+    def _(self, name: str, price: float):
+        """Agregar un producto por nombre y precio."""
+        producto = Product(len(self.products) + 1, name, price)
+        self.products.append(producto)
+        print(f"Producto '{name}' con precio {price} agregado al carrito.")
+```
+Se usa la palabra reservada ```register``` para registrar el método como un comportamiento del método original ```agregar_producto``` y carece de nombre, solo se denota con el guión bajo (```_```) para indicar que usará el mismo nombre, pero cada definición con diferentes argumentos.
+
+Su implementación en el archivo ```main.py```:
+
+```
+print('-----MOSTRANDO EJEMPLO DE SOBRECARGA DE METODOS-----')
+payment_method = PaymentMethod(
+    1, 'Credit Card', {'number' : '1234567890', 'expitation_date' : '2021-01-01'}
+)
+client = Client(
+    1, 'user', 'user@gmailcom', '1234', '1234567890', 'client', '2021-01-01', '123 Main St', payment_method, ['Books', 'Electronics']   
+)
+carrito = ShoppingCart(1, client, [], 0.0)
+
+# Sobrecarga en acción
+carrito.agregar_producto(producto_fisico)  # Agregar por objeto
+carrito.agregar_producto(3, "Producto Temporal")  # Agregar por ID y nombre
+carrito.agregar_producto("Producto Genérico", 50.0)  # Agregar por nombre y precio
+print()
+
+# Ver contenido del carrito
+for producto in carrito.products:
+    print(producto.mostrar_detalle())
+    print()
+```
+
+Se puede observar la salida en el archivo ```main.py```:
+
+```
+-----MOSTRANDO EJEMPLO DE SOBRECARGA DE METODOS-----
+Producto 'Laptop' agregado al carrito.
+Producto con ID 3 y nombre 'Producto Temporal' agregado al carrito.
+Producto 'Producto Genérico' con precio 50.0 agregado al carrito.
+
+Producto Fisico: 
+ID: 1 
+Nombre: Laptop 
+Precio: 1000.0 
+Peso: 2.5kg 
+Dimensiones: 30x20x5cm
+
+ID: 3 
+Nombre: Producto Temporal 
+Precio: None
+
+ID: 3 
+Nombre: Producto Genérico 
+Precio: None
+```
+
+### Sobreescritura de Métodos
+- **Clase Product, DigitalProduct y PhysicalProduct**:
+Argumentando lo que se planteó en el epígrafe de __Implementación de polimorfismo__, se define el método:
+```
+def mostrar_detalles_producto(producto: Product)
+      print(producto.mostrar_detalle())
+```
+Que el mismo de acuerdo al tipo de producto, llamará su método redefinido específicamente para la clase de esta instancia, como se puede observar para cada una de las clases:
+
+Clase Padre:
+
+```
+class Product:
+    ...
+    def mostrar_detalle(self) -> str:
+        """Método concreto en la clase base."""
+        return f"ID: {self.product_id} \nNombre: {self.name} \nPrecio: {self.price}"
+```
+Clases Hijas:
+```
+class DigitalProduct(Product):
+    ...
+    def mostrar_detalle(self) -> str:
+        """Extiende el método de la clase base con detalles específicos."""
+        return f"Producto Digital: \n{super().mostrar_detalle()} \nURL del archivo: {self.file_url} \nFormato: {self.format} \nTamaño: {self.size}MB"
+```
+
+```
+class PhysicalProduct(Product):
+    ...
+    def mostrar_detalle(self) -> str:
+        """Extiende el método de la clase base con detalles específicos."""
+        return f"Producto Fisico: \n{super().mostrar_detalle()} \nPeso: {self.weight}kg \nDimensiones: {self.height}x{self.width}x{self.depth}cm"
+```
+Y el resultado se pudo ver en el epígrafe de __Implementación de polimorfismo__, donde solo recibiendo el producto, automáticamente el lenguaje reconoce qué método invocar de la respectiva clase de la instancia.
