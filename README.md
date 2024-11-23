@@ -14,6 +14,8 @@
 11. [Sobreescritura de Métodos](#sobreescritura-de-métodos)
 12. [Abstracción](#abstracción)
 13. [Encapsulamiento](#encapsulamiento)
+14. [Implementación de Interfaces y Clases Abstractas](#implementación-de-interfaces-y-clases-abstractas)
+15. [Uso de Interfaces para Procesos de Pago](#uso-de-interfaces-para-procesos-de-pago)
 
 ## Descripción del Proyecto
 
@@ -628,3 +630,213 @@ Traceback (most recent call last):
 ValueError: El correo electrónico debe ser válido.
 ```
 
+## Implementación de Interfaces y Clases Abstractas
+En Python, usar el módulo abc permite definir clases abstractas y métodos abstractos. Para una clase  abstracta, todos sus metodos deben llevan el decorador ```@abstractmethod``` de la libreria ABC (```from abc import ABC, abstractmethod```):
+
+```
+from abc import ABC, abstractmethod
+
+class InventoryManager(ABC):
+    @abstractmethod
+    def addProduct(self, product, quantity):
+        """Añadir un producto al inventario"""
+        pass
+
+    @abstractmethod
+    def deleteProduct(self, product):
+        """Eliminar un producto del inventario"""
+        pass
+
+    @abstractmethod
+    def updateStock(self, product, quantity):
+        """Actualizar el stock de un producto"""
+        pass
+```
+
+En este caso: 
+Clase abstracta (```InventoryManager```):
+Define los métodos obligatorios que las clases concretas deben implementar.
+Utiliza el decorador @abstractmethod para garantizar que cualquier clase hija implemente estos métodos.
+
+Clases concretas (```PhysicalInventoryManager``` y ```DigitalInventoryManager```):
+
+Proporcionan implementaciones específicas para cada tipo de inventario.
+Utilizan diccionarios (```self.inventory```) para gestionar los productos y sus cantidades.
+
+```
+class PhysicalInventoryManager(InventoryManager):
+    def __init__(self):
+        self.inventory = {}
+
+    def addProduct(self, product, quantity):
+        ...
+
+    def deleteProduct(self, product):
+        ...
+
+    def updateStock(self, product, quantity):
+        ...
+```
+
+```
+class DigitalInventoryManager(InventoryManager):
+    def __init__(self):
+        self.inventory = {}
+
+    def addProduct(self, product, quantity):
+        ...
+
+    def deleteProduct(self, product):
+        ...
+
+    def updateStock(self, product, quantity):
+        ...
+```
+Veamos un ejemplo:
+```
+nventario_fisico = PhysicalInventoryManager()
+inventario_digital = DigitalInventoryManager()
+
+    # Gestionar inventario físico
+inventario_fisico.addProduct("Silla", 10)
+inventario_fisico.updateStock("Silla", 15)
+inventario_fisico.deleteProduct("Silla")
+
+    # Gestionar inventario digital
+inventario_digital.addProduct("Licencia de software", 100)
+inventario_digital.updateStock("Licencia de software", 120)
+inventario_digital.deleteProduct("Licencia de software")
+```
+Resultado:
+```
+Producto físico añadido: Silla (10)
+Stock actualizado para Silla: 15
+Producto físico eliminado: Silla
+Producto digital añadido: Licencia de software (100)
+Stock actualizado para Licencia de software: 120
+Producto digital eliminado: Licencia de software
+(venv) rcglezreyes@MacBookAir project_poo % 
+```
+Ahora probemos no implementando un método a ver quê respuesta se obtiene:
+En la clase ```PhysicalInventoryManager``` comentamos el último método:
+```
+# def updateStock(self, product, quantity):
+#     if product in self.inventory:
+#         self.inventory[product] = quantity
+#         print(f"Stock actualizado para {product}: {quantity}")
+#     else:
+#         print(f"Producto {product} no encontrado en el inventario físico.")
+```
+El resultado:
+```
+zreyes/Documents/maestria/OOP/project_poo/main.py
+Traceback (most recent call last):
+  File "/Users/rcglezreyes/Documents/maestria/OOP/project_poo/main.py", line 112, in <module>
+    inventario_fisico = PhysicalInventoryManager()
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Can't instantiate abstract class PhysicalInventoryManager without an implementation for abstract method 'updateStock'
+(venv) rcglezreyes@MacBookAir project_poo % 
+```
+Cada clase Concreta debe implementar exactamente todos los métodos definidos como abstractos en la clase Abstracta
+
+## Uso de Interfaces para Procesos de Pago
+
+El módulo ```typing``` de Python, proporciona ```Protocol```, que permite definir interfaces sin necesidad de clases abstractas, como lo hacen otros lenguajes como Java con la palabra reservada ```interface```. El ejemplo:
+```
+from typing import Protocol
+
+class PaymentProcess(Protocol):
+    def startPayment(self, monto: float) -> str:
+        """Inicia el proceso de pago."""
+        ...
+
+    def verifyPayment(self, referencia: str) -> bool:
+        """Verifica el estado del pago."""
+        ...
+
+    def confirmPayment(self, referencia: str) -> str:
+        """Confirma que el pago se ha completado."""
+        ...
+```
+En este caso, sí se incluyen realmente los 3 puntos suspensivos para denotar que ese método será implementado en alguna clase que usará la clase original como referencia, en otra palabras, la implementará.
+
+Las clases que implementan las interface, lo que hacen es referenciarla como argumento, como si hereraran de ella, pero el intérprete de Python sabe cuando se trata de herencia y cuando se trata de implementación de interface, con el simple hecho del origen y definición de la clase:
+
+```
+from models.payment_process import PaymentProcess
+
+class CardPayment(PaymentProcess):
+    def startPayment(self, amount: float) -> str:
+        print(f"Iniciando pago con tarjeta por ${amount:.2f}")
+        return "ref-tarjeta-123"
+
+    def verifyPayment(self, reference: str) -> bool:
+        print(f"Verificando pago con referencia {reference}")
+        return True
+
+    def confirmPayment(self, reference: str) -> str:
+        print(f"Confirmando pago con tarjeta con referencia {reference}")
+        return "Pago con tarjeta confirmado"
+```
+
+```
+from models.payment_process import PaymentProcess
+
+class PaypalPayment(PaymentProcess):
+    def startPayment(self, amount: float) -> str:
+        print(f"Iniciando pago con PayPal por ${amount:.2f}")
+        return "ref-tarjeta-123"
+
+    def verifyPayment(self, reference: str) -> bool:
+        print(f"Verificando pago en PayPal con referencia {reference}")
+        return True
+
+    def confirmPayment(self, reference: str) -> str:
+        print(f"Confirmando pago en PayPal con referencia {reference}")
+        return "Pago con tarjeta confirmado"
+```
+
+Vemos un ejemplo y el resultado:
+
+```
+def globalPaymentProcessor(procesador: PaymentProcess, monto: float) -> None:
+    referencia = procesador.startPayment(monto)
+    print(f"Referencia generada: {referencia}")
+
+    if procesador.verifyPayment(referencia):
+        resultado = procesador.confirmPayment(referencia)
+        print(resultado)
+    else:
+        print("El pago no pudo ser verificado.")
+        
+# Procesar pago con tarjeta
+print("=== Pago con Tarjeta ===")
+procesador_tarjeta = CardPayment()
+globalPaymentProcessor(procesador_tarjeta, 150.75)
+
+    # Procesar pago con PayPal
+print("\n=== Pago con PayPal ===")
+procesador_paypal = PaypalPayment()
+globalPaymentProcessor(procesador_paypal, 200.50)
+```
+En este caso se recibe una interface en el método para procesar, y hay dos instancias que implementan esa interface que han sido definidas, veremos los resultados si se corresponden con sus respectivas implementaciones:
+
+```
+reyes/Documents/maestria/OOP/project_poo/main.py
+=== Pago con Tarjeta ===
+Iniciando pago con tarjeta por $150.75
+Referencia generada: ref-tarjeta-123
+Verificando pago con referencia ref-tarjeta-123
+Confirmando pago con tarjeta con referencia ref-tarjeta-123
+Pago con tarjeta confirmado
+
+=== Pago con PayPal ===
+Iniciando pago con PayPal por $200.50
+Referencia generada: ref-tarjeta-123
+Verificando pago en PayPal con referencia ref-tarjeta-123
+Confirmando pago en PayPal con referencia ref-tarjeta-123
+Pago con tarjeta confirmado
+(venv) rcglezreyes@MacBookAir project_poo % 
+```
+
+Como se observa, ha sido de esta forma, usando su método reimplementado específico para cada clase. Aqui se mezcla el principio de Polimorfismo pues el método ```globalPaymentProcessor``` toma como parámetro cualquier objeto que implemente la interfaz ```PaymentProcess```, permitiendo procesar pagos de diferentes maneras sin modificar el código base.

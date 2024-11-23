@@ -7,6 +7,11 @@ from models.physical_product import PhysicalProduct
 from models.digital_product import DigitalProduct
 from models.shopping_cart import ShoppingCart
 from models.category import Category
+from models.digital_inventory_manager import DigitalInventoryManager
+from models.physical_inventory_manager import PhysicalInventoryManager
+from models.payment_process import PaymentProcess
+from models.card_payment import CardPayment
+from models.paypal_payment import PaypalPayment
 
 
 # # def mostrar_detalles_producto(producto: Product):
@@ -94,18 +99,51 @@ from models.category import Category
 # print()
 # producto_digital.price = -78.34
 # print(producto_digital.price)
-payment_method = PaymentMethod(
-     1, 'Credit Card', {'number' : '1234567890', 'expitation_date' : '2021-01-01'}
-)
-client = Client(
-    1, 'user', 'user@gmailcom', '1234', '1234567890', 'client', '2021-01-01', '123 Main St', payment_method, ['Books', 'Electronics']   
-)
+# payment_method = PaymentMethod(
+#      1, 'Credit Card', {'number' : '1234567890', 'expitation_date' : '2021-01-01'}
+# )
+# client = Client(
+#     1, 'user', 'user@gmailcom', '1234', '1234567890', 'client', '2021-01-01', '123 Main St', payment_method, ['Books', 'Electronics']   
+# )
 
-print("----MOSTRANDO GETTERS, SETTERS Y VALIDACIONES DE USUARIOS/CLIENTES----")
+# print("----MOSTRANDO GETTERS, SETTERS Y VALIDACIONES DE USUARIOS/CLIENTES----")
 
-client.email = 'estonoesunemail.com'
+# client.email = 'estonoesunemail.com'
 
-print(client.email)
+# print(client.email)
+
+# inventario_fisico = PhysicalInventoryManager()
+# inventario_digital = DigitalInventoryManager()
+
+#     # Gestionar inventario físico
+# inventario_fisico.addProduct("Silla", 10)
+# inventario_fisico.updateStock("Silla", 15)
+# inventario_fisico.deleteProduct("Silla")
+
+#     # Gestionar inventario digital
+# inventario_digital.addProduct("Licencia de software", 100)
+# inventario_digital.updateStock("Licencia de software", 120)
+# inventario_digital.deleteProduct("Licencia de software")
+
+def globalPaymentProcessor(procesador: PaymentProcess, monto: float) -> None:
+    referencia = procesador.startPayment(monto)
+    print(f"Referencia generada: {referencia}")
+
+    if procesador.verifyPayment(referencia):
+        resultado = procesador.confirmPayment(referencia)
+        print(resultado)
+    else:
+        print("El pago no pudo ser verificado.")
+        
+# Procesar pago con tarjeta
+print("=== Pago con Tarjeta ===")
+procesador_tarjeta = CardPayment()
+globalPaymentProcessor(procesador_tarjeta, 150.75)
+
+    # Procesar pago con PayPal
+print("\n=== Pago con PayPal ===")
+procesador_paypal = PaypalPayment()
+globalPaymentProcessor(procesador_paypal, 200.50)
 
 
 
