@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from models.role import Role
+from models.classes_poo.role import Role
 
 import re
 
@@ -13,7 +13,7 @@ class User:
     role: Role                    # Rol del usuario
     registration_date: datetime   # Fecha de registro en la plataforma
 
-    def __init__(self, user_id, username, email, password, phone, role, registration_date):
+    def __init__(self, user_id=None, username=None, email=None, password=None, phone=None, role=None, registration_date=None):
         self.__user_id = user_id
         self.__username = username
         self.__email = email

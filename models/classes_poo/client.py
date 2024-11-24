@@ -1,5 +1,5 @@
-from models.payment_method import PaymentMethod
-from models.user import User
+from models.classes_poo.payment_method import PaymentMethod
+from models.classes_poo.user import User
 
 
 class Client(User):
@@ -8,7 +8,7 @@ class Client(User):
     preferences: list[str]                  # Lista de preferencias del cliente
     
 
-    def __init__(self, user_id, username, email, password, phone, role, registration_date, address, payment_methods,preferences):
+    def __init__(self, user_id=None, username=None, email=None, password=None, phone=None, role=None, registration_date=None, address=None, payment_methods=None,preferences=None):
         super().__init__(user_id, username, email, password, phone, role, registration_date)
         self.__address = address
         self.__payment_methods = payment_methods

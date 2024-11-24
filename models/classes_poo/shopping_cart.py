@@ -1,5 +1,5 @@
-from models.client import Client
-from models.product import Product
+from models.classes_poo.client import Client
+from models.classes_poo.product import Product
 from functools import singledispatchmethod
 
 

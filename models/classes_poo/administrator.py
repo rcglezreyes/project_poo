@@ -1,9 +1,9 @@
-from models.user import User
+from models.classes_poo.user import User
 
 class Administrator(User):
     list_promotions: list[str]    # Lista de promociones
     
-    def __init__(self, user_id, username, email, password, phone, role, registration_date, list_promotions):
+    def __init__(self, user_id=None, username=None, email=None, password=None, phone=None, role=None, registration_date=None, list_promotions=None):
         super().__init__(user_id, username, email, password, phone, role, registration_date)
         self.list_promotions = list_promotions
         

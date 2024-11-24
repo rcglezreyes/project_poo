@@ -1,11 +1,11 @@
-from models.product import Product
+from models.classes_poo.product import Product
 
 class DigitalProduct(Product):
     file_url: str    # URL
     format: str      # Formato
     size: float      # Tamano
 
-    def __init__(self, product_id, name, description, price, stock, category, image_url, file_url, format, size):
+    def __init__(self, product_id=None, name=None, description=None, price=None, stock=None, category=None, image_url=None, file_url=None, format=None, size=None):
         super().__init__(product_id, name, description, price, stock, category, image_url)
         self.__file_url = file_url
         self.__format = format

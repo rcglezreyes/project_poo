@@ -1,4 +1,4 @@
-from models.product import Product
+from models.classes_poo.product import Product
 
 class PhysicalProduct(Product):
     weight: float    # Peso
@@ -6,7 +6,7 @@ class PhysicalProduct(Product):
     width: float     # Ancho
     depth: float     # Profundidad
 
-    def __init__(self, product_id, name, description, price, stock, category, image_url, weight, height, width, depth):
+    def __init__(self, product_id=None, name=None, description=None, price=None, stock=None, category=None, image_url=None, weight=None, height=None, width=None, depth=None):
         super().__init__(product_id, name, description, price, stock, category, image_url)
         self.__weight = weight
         self.__height = height

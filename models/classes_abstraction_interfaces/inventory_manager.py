@@ -2,16 +2,16 @@ from abc import ABC, abstractmethod
 
 class InventoryManager(ABC):
     @abstractmethod
-    def addProduct(self, product, quantity):
+    def add_product(self, product, quantity):
         """Añadir un producto al inventario"""
         pass
 
     @abstractmethod
-    def deleteProduct(self, product):
+    def delete_product(self, product):
         """Eliminar un producto del inventario"""
         pass
 
     @abstractmethod
-    def updateStock(self, product, quantity):
+    def update_stock(self, product, quantity):
         """Actualizar el stock de un producto"""
         pass

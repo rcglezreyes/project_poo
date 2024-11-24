@@ -1,5 +1,5 @@
 from typing import Any
-from models.category import Category
+from models.classes_poo.category import Category
 from abc import ABC, abstractmethod
 
 

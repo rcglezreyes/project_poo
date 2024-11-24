@@ -16,6 +16,9 @@
 13. [Encapsulamiento](#encapsulamiento)
 14. [Implementación de Interfaces y Clases Abstractas](#implementación-de-interfaces-y-clases-abstractas)
 15. [Uso de Interfaces para Procesos de Pago](#uso-de-interfaces-para-procesos-de-pago)
+16. [Singleton para Gestión de Configuración](#singleton-para-gestión-de-configuración)
+17. [Factory para Creación de Productos o Usuarios](#factory-para-creación-de-productos-o-usuarios)
+18. [Observer para Notificaciones](#observer-para-notificaciones)
 
 ## Descripción del Proyecto
 
@@ -50,24 +53,42 @@ La estructura principal del proyecto es la siguiente:
 
 ```plaintext
 ecommerce_system/
-├── main.py                          # Archivo principal para ejecutar la aplicación
-├── config/                          # Configuraciones de base de datos y parámetros generales
-├── controllers/                     # Lógica de negocio para gestión de productos, usuarios, etc.
-├── models/                          # Clases y estructuras de datos (Producto, Usuario, Pedido)
-│   ├── administrator.py             # Clase Administrator (hereda de User)
-│   ├── category.py                  # Clase Category
-│   ├── client.py                    # Clase Client (hereda de User)
-│   ├── digital_product.py           # Clase DigitalProduct (hereda de Product)
-│   ├── order.py                     # Clase Order
-│   ├── payment.py                   # Clase Payment
-│   ├── physical_product.py          # Clase PhysicalProduct (hereda de Product)
-│   ├── product.py                   # Clase Product
-│   ├── role.py                      # Clase Role
-│   ├── shopping_cart.py             # Clase Shopping Cart
-│   └── user.py                      # Clase User
-├── requirements.txt                 # Listado de dependencias del proyecto
-├── views/                           # Interfaces gráficas de PyQt5
-└── README.md                        # Documentación del proyecto
+├── main.py                                 # Archivo principal para ejecutar la aplicación
+├── config/                                 # Configuraciones de base de datos y parámetros generales
+├── controllers/                            # Lógica de negocio para gestión de productos, usuarios, etc.
+├── models/                                 # Clases y estructuras de datos (Producto, Usuario, Pedido)
+│   ├── classes_abstraction_interfaces/     # Clases relacionadas con el tema de Abstracción e Interfaces
+|   |   ├── card_payment.py                 # Clase Proceso de Pago por Tarjeta, implementa interfaz PaymentProcess (Proceso de Pago)
+|   |   ├── digital_inventory_manager.py    # Clase Gestor de Inventario Digital, hereda clase abstracta InventoryManager (Gestor de Inventario)
+|   |   ├── inventory_manager.py            # Clase abstracta InventoryManager (Gestor de Inventario)
+|   |   ├── payment_process.py              # Clase interfaz PaymentProcess (Proceso de Pago)
+|   |   ├── paypal_payment.py               # Clase Proceso de Pago por Paypal, implementa interfaz PaymentProcess (Proceso de Pago)
+|   |   ├── physical_inventory_manager.py   # Clase Gestor de Inventario Físico, hereda clase abstracta InventoryManager (Gestor de Inventario)
+│   ├── classes_pattern_factory/
+|   |   ├── entity_factory.py               # Clase Fábrica de Entidades (EntityFactory)
+|   ├── classes_pattern_observer/
+|   |   ├── inventory_manage_interface.py   # Clase Interfaz Gestion de Inventario (InventoryManageInterface)
+|   |   ├── observer_cls.py                 # Función para decorador/anotador @observer_cls
+|   |   ├── subject.py                      # Clase Subject para registrar el sujeto del observador, usando WeakSet de Python para esta tarea
+|   |   ├── user_interface.py               # Clase Interfaz Usuario (UserInterface)
+│   ├── classes_pattern_singleton/
+|   |   ├── decorators.py                   # Script para declaración de decoradores personalizados (se implementa la función singleton como decorador a usar)
+|   |   ├── system_configuration.py         # Clase SystemConfiguration (Configuración de Sistema), definida usando el decorador/anotador @singleton
+│   ├── classes_poo/
+│   │   ├── administrator.py                # Clase Administrator (hereda de User)
+│   │   ├── category.py                     # Clase Category
+│   │   ├── client.py                       # Clase Client (hereda de User)
+|   │   ├── digital_product.py              # Clase DigitalProduct (hereda de Product)
+|   │   ├── order.py                        # Clase Order
+|   │   ├── payment.py                      # Clase Payment
+|   │   ├── physical_product.py             # Clase PhysicalProduct (hereda de Product)
+|   │   ├── product.py                      # Clase Product
+|   │   ├── role.py                         # Clase Role
+|   │   ├── shopping_cart.py                # Clase Shopping Cart
+|   │   └── user.py                         # Clase User
+├── requirements.txt                        # Listado de dependencias del proyecto
+├── views/                                  # Interfaces gráficas de PyQt5
+└── README.md                               # Documentación del proyecto
 ```
 
 ### Comandos
@@ -638,17 +659,17 @@ from abc import ABC, abstractmethod
 
 class InventoryManager(ABC):
     @abstractmethod
-    def addProduct(self, product, quantity):
+    def add_product(self, product, quantity):
         """Añadir un producto al inventario"""
         pass
 
     @abstractmethod
-    def deleteProduct(self, product):
+    def delete_product(self, product):
         """Eliminar un producto del inventario"""
         pass
 
     @abstractmethod
-    def updateStock(self, product, quantity):
+    def update_stock(self, product, quantity):
         """Actualizar el stock de un producto"""
         pass
 ```
@@ -668,13 +689,13 @@ class PhysicalInventoryManager(InventoryManager):
     def __init__(self):
         self.inventory = {}
 
-    def addProduct(self, product, quantity):
+    def add_product(self, product, quantity):
         ...
 
-    def deleteProduct(self, product):
+    def delete_product(self, product):
         ...
 
-    def updateStock(self, product, quantity):
+    def update_stock(self, product, quantity):
         ...
 ```
 
@@ -683,13 +704,13 @@ class DigitalInventoryManager(InventoryManager):
     def __init__(self):
         self.inventory = {}
 
-    def addProduct(self, product, quantity):
+    def add_product(self, product, quantity):
         ...
 
-    def deleteProduct(self, product):
+    def delete_product(self, product):
         ...
 
-    def updateStock(self, product, quantity):
+    def update_stock(self, product, quantity):
         ...
 ```
 Veamos un ejemplo:
@@ -698,14 +719,14 @@ nventario_fisico = PhysicalInventoryManager()
 inventario_digital = DigitalInventoryManager()
 
     # Gestionar inventario físico
-inventario_fisico.addProduct("Silla", 10)
-inventario_fisico.updateStock("Silla", 15)
-inventario_fisico.deleteProduct("Silla")
+inventario_fisico.add_product("Silla", 10)
+inventario_fisico.update_stock("Silla", 15)
+inventario_fisico.delete_product("Silla")
 
     # Gestionar inventario digital
-inventario_digital.addProduct("Licencia de software", 100)
-inventario_digital.updateStock("Licencia de software", 120)
-inventario_digital.deleteProduct("Licencia de software")
+inventario_digital.add_product("Licencia de software", 100)
+inventario_digital.update_stock("Licencia de software", 120)
+inventario_digital.delete_product("Licencia de software")
 ```
 Resultado:
 ```
@@ -720,7 +741,7 @@ Producto digital eliminado: Licencia de software
 Ahora probemos no implementando un método a ver quê respuesta se obtiene:
 En la clase ```PhysicalInventoryManager``` comentamos el último método:
 ```
-# def updateStock(self, product, quantity):
+# def update_stock(self, product, quantity):
 #     if product in self.inventory:
 #         self.inventory[product] = quantity
 #         print(f"Stock actualizado para {product}: {quantity}")
@@ -734,7 +755,7 @@ Traceback (most recent call last):
   File "/Users/rcglezreyes/Documents/maestria/OOP/project_poo/main.py", line 112, in <module>
     inventario_fisico = PhysicalInventoryManager()
                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
-TypeError: Can't instantiate abstract class PhysicalInventoryManager without an implementation for abstract method 'updateStock'
+TypeError: Can't instantiate abstract class PhysicalInventoryManager without an implementation for abstract method 'update_stock'
 (venv) rcglezreyes@MacBookAir project_poo % 
 ```
 Cada clase Concreta debe implementar exactamente todos los métodos definidos como abstractos en la clase Abstracta
@@ -746,15 +767,15 @@ El módulo ```typing``` de Python, proporciona ```Protocol```, que permite defin
 from typing import Protocol
 
 class PaymentProcess(Protocol):
-    def startPayment(self, monto: float) -> str:
+    def start_payment(self, monto: float) -> str:
         """Inicia el proceso de pago."""
         ...
 
-    def verifyPayment(self, referencia: str) -> bool:
+    def verify_payment(self, referencia: str) -> bool:
         """Verifica el estado del pago."""
         ...
 
-    def confirmPayment(self, referencia: str) -> str:
+    def confirm_payment(self, referencia: str) -> str:
         """Confirma que el pago se ha completado."""
         ...
 ```
@@ -766,15 +787,15 @@ Las clases que implementan las interface, lo que hacen es referenciarla como arg
 from models.payment_process import PaymentProcess
 
 class CardPayment(PaymentProcess):
-    def startPayment(self, amount: float) -> str:
+    def start_payment(self, amount: float) -> str:
         print(f"Iniciando pago con tarjeta por ${amount:.2f}")
         return "ref-tarjeta-123"
 
-    def verifyPayment(self, reference: str) -> bool:
+    def verify_payment(self, reference: str) -> bool:
         print(f"Verificando pago con referencia {reference}")
         return True
 
-    def confirmPayment(self, reference: str) -> str:
+    def confirm_payment(self, reference: str) -> str:
         print(f"Confirmando pago con tarjeta con referencia {reference}")
         return "Pago con tarjeta confirmado"
 ```
@@ -783,15 +804,15 @@ class CardPayment(PaymentProcess):
 from models.payment_process import PaymentProcess
 
 class PaypalPayment(PaymentProcess):
-    def startPayment(self, amount: float) -> str:
+    def start_payment(self, amount: float) -> str:
         print(f"Iniciando pago con PayPal por ${amount:.2f}")
         return "ref-tarjeta-123"
 
-    def verifyPayment(self, reference: str) -> bool:
+    def verify_payment(self, reference: str) -> bool:
         print(f"Verificando pago en PayPal con referencia {reference}")
         return True
 
-    def confirmPayment(self, reference: str) -> str:
+    def confirm_payment(self, reference: str) -> str:
         print(f"Confirmando pago en PayPal con referencia {reference}")
         return "Pago con tarjeta confirmado"
 ```
@@ -800,11 +821,11 @@ Vemos un ejemplo y el resultado:
 
 ```
 def globalPaymentProcessor(procesador: PaymentProcess, monto: float) -> None:
-    referencia = procesador.startPayment(monto)
+    referencia = procesador.start_payment(monto)
     print(f"Referencia generada: {referencia}")
 
-    if procesador.verifyPayment(referencia):
-        resultado = procesador.confirmPayment(referencia)
+    if procesador.verify_payment(referencia):
+        resultado = procesador.confirm_payment(referencia)
         print(resultado)
     else:
         print("El pago no pudo ser verificado.")
@@ -840,3 +861,311 @@ Pago con tarjeta confirmado
 ```
 
 Como se observa, ha sido de esta forma, usando su método reimplementado específico para cada clase. Aqui se mezcla el principio de Polimorfismo pues el método ```globalPaymentProcessor``` toma como parámetro cualquier objeto que implemente la interfaz ```PaymentProcess```, permitiendo procesar pagos de diferentes maneras sin modificar el código base.
+
+## Singleton para Gestión de Configuración
+
+Una manera de implementar el patrón ```Singleton``` en Python es mediante un decorador. Decorador ```singleton```:
+```
+def singleton(cls):
+    _instances = {}
+
+    def get_instance(*args, **kwargs):
+        if cls not in _instances:
+            _instances[cls] = cls(*args, **kwargs)
+        return _instances[cls]
+
+    return get_instance
+
+```
+Es una simple función que recible un parámetro de tipo class (```cls```)
+
+Declaramos la clase ```SystemConfiguration``` importando el decorador ```@singleton```:
+```
+from decorators import singleton
+
+@singleton
+class SystemConfiguration:
+    def __init__(self, db_url=None, ui_config=None):
+        ...
+
+    def show_configuration(self):
+        ...
+```
+
+Ahora demostraremos que sigue este patrón ```singleton```. Declaramos su uso en el main:
+
+```
+config1 = SystemConfiguration(db_url="postgres://prod:5432/ecommerce", ui_config={"theme": "dark"})
+print("Configuración inicial:", config1.show_configuration())
+
+# Segunda instancia
+config2 = SystemConfiguration(db_url="postgres://test:5432/ecommerce", ui_config={"theme": "light"})
+print("Configuración al intentar otra instancia:", config2.show_configuration())
+
+# Verificar que ambas instancias son la misma
+print("¿Son la misma instancia?", config1 is config2)
+```
+
+El resultado:
+```
+(venv) rcglezreyes@MacBookAir project_poo % /Users/rcglezreyes/Documents/maestria/OOP/project_poo/venv/bin/python /Users/rcgle
+zreyes/Documents/maestria/OOP/project_poo/main.py
+Configuración inicial: {'db_url': 'postgres://prod:5432/ecommerce', 'ui_config': {'theme': 'dark'}}
+Configuración al intentar otra instancia: {'db_url': 'postgres://prod:5432/ecommerce', 'ui_config': {'theme': 'dark'}}
+¿Son la misma instancia? True
+(venv) rcglezreyes@MacBookAir project_poo % 
+```
+
+Probemos otro valor para ```config2```:
+```
+config2 = SystemConfiguration(db_url="postgres://test:5432/dd_invoices", ui_config={"theme": "light"})
+```
+El resultado:
+```
+Configuración inicial: {'db_url': 'postgres://prod:5432/ecommerce', 'ui_config': {'theme': 'dark'}}
+**Configuración al intentar otra instancia: {'db_url': 'postgres://prod:5432/ecommerce', 'ui_config': {'theme': 'dark'}}**
+¿Son la misma instancia? True
+```
+No reasigna el nuevo valor de ```db_url```, lo que demuestra que sigue el patron único (```singleton```)
+
+## Factory para Creación de Productos o Usuarios
+
+El patrón ```Factory``` es ideal para abstraer la creación de objetos. A continuación un ejemplo de una clase ```EntityFactory``` que sigue este patrón y puede crear instancias de ```Product``` o ```User```, según el tipo especificado:
+
+```
+from models.classes_poo.digital_product import DigitalProduct
+from models.classes_poo.physical_product import PhysicalProduct
+from models.classes_poo.client import Client
+from models.classes_poo.administrator import Administrator
+
+class EntityFactory:
+    @staticmethod
+    def create_entity(type, **kwargs):
+        if type == "producto_digital":
+            return DigitalProduct(name=kwargs["name"], price=kwargs["price"])
+        elif type == "producto_fisico":
+            return PhysicalProduct(name=kwargs["name"], price=kwargs["price"])
+        elif type == "usuario_cliente":
+            return Client(username=kwargs["username"], email=kwargs["email"])
+        elif type == "usuario_administrador":
+            return Administrator(username=kwargs["username"], email=kwargs["email"])
+        else:
+            raise ValueError(f"Tipo de entidad no reconocido: {type}")
+```
+Probamos en el ```main.py```:
+```
+# Creando Products
+producto_digital = EntityFactory.create_entity(
+    "producto_digital", name="eBook de Python", price=9.99
+)
+producto_fisico = EntityFactory.create_entity(
+    "producto_fisico", name="Laptop", price=1200.00
+)
+
+# Creando Users
+usuario_cliente = EntityFactory.create_entity(
+    "usuario_cliente", username="juan.perez", email="juan@example.com"
+)
+usuario_administrador = EntityFactory.create_entity(
+    "usuario_administrador", username="ana.lopez", email="ana@example.com"
+)
+
+# Mostrar detalles
+print(producto_digital.__str__())
+print(producto_fisico.__str__())
+print(usuario_cliente.__str__())
+print(usuario_administrador.__str__())
+```
+
+El resultado:
+```
+(venv) rcglezreyes@MacBookAir project_poo % /Users/rcglezreyes/Documents/maestria/OOP/project_poo/venv/bin/python /Users/rcglezrey
+es/Documents/maestria/OOP/project_poo/main.py
+ 
+ID: None 
+Nombre: eBook de Python 
+Descripcion: None 
+Precio: 9.99, Stock: None, Categoria: None, Imagen URL: None 
+File URL: None 
+Format: None 
+Size: None
+ 
+ID: None 
+Nombre: Laptop 
+Descripcion: None 
+Precio: 1200.0, Stock: None, Categoria: None, Imagen URL: None 
+Weight: None 
+Height: None 
+Width: None 
+Depth: None
+ 
+User ID: None 
+Username: juan.perez 
+Email: juan@example.com 
+Phone: None 
+Role: None 
+Registration Date: None 
+Address: None 
+Payment methods:[None] 
+Preferences: None
+ 
+User ID: None 
+Username: ana.lopez 
+Email: ana@example.com 
+Phone: None 
+Role: None 
+Registration Date: None 
+List of promotions: None
+(venv) rcglezreyes@MacBookAir project_poo % 
+```
+**Conclusión:**
+
+Clases base:
+
+```Product``` y ```User``` son clases abstractas con métodos que deben implementarse en las subclases.
+
+Clases derivadas:
+
+```DigitalProduct``` y ```PhysicalProduct``` heredan de ```Product``` y definen el método ```__str__```.
+
+```Client``` y ```Administrator``` heredan de ```User``` y definen el método ```__str__```.
+
+Fábrica (```EntityFactory```):
+
+Proporciona un único punto de acceso para crear objetos. Usa un parámetro ```type``` para decidir qué clase instanciar y los argumentos necesarios (```kwargs```).
+
+Ventajas:
+
+Abstracción: No se necesita preocupar por las clases concretas al crear objetos.
+Escalabilidad: Si se necesita agregar nuevos tipos (```type```), solo se añaden casos en la fábrica.
+
+## Observer para Notificaciones
+
+Para implementar el patrón Observer utilizando herramientas integradas de Python, puedes usar el módulo weakref, que incluye una clase llamada WeakKeyDictionary, ideal para mantener referencias débiles a observadores sin evitar que el recolector de basura elimine objetos no utilizados. También se puede usar un decorador para facilitar la suscripción de métodos como observadores.
+
+Creamos la clase ```Subject``` que registre la cola de eventos en su set protegido ```_observers```:
+```
+from weakref import WeakSet
+
+class Subject:
+    def __init__(self):
+        self._observers = WeakSet()
+
+    def add_observer(self, observer):
+        self._observers.add(observer)
+
+    def delete_observer(self, observer):
+        self._observers.discard(observer)
+
+    def notify_observers(self, event):
+        for observer in self._observers:
+            observer.update(event)
+```
+
+Creamos el anotador/decorador con un ```subject```:
+```
+from weakref import WeakSet
+
+class Subject:
+    def __init__(self):
+        self._observers = WeakSet()
+
+    def add_observer(self, observer):
+        self._observers.add(observer)
+
+    def delete_observer(self, observer):
+        self._observers.discard(observer)
+
+    def notify_observers(self, event):
+        for observer in self._observers:
+            observer.update(event)
+```
+
+Creamos las interfaces que notificarán las actividades de cambio de evento registradas con el anotador:
+```
+@observer_cls
+class InventoryManageInterface:
+    def __init__(self, subject):
+        self.subject = subject
+
+    def update(self, event):
+        print(f"[Gestión de Inventario] Actualizando inventario debido a: {event}")
+```
+
+```
+@observer_cls
+class UserInterface:
+    def __init__(self, subject):
+        self.subject = subject
+
+    def update(self, event):
+        print(f"[Interfaz de Usuario] Notificación recibida: {event}")
+```
+
+Tomamos la clase ```Order``` y la ponemos a heredar/implementar de ```Subject``` para que incluya la gestión de cambios de eventos que tiene esta clase y definimos un método en ella llamado ```change_status```:
+```
+class Order(Subject):
+    ...
+        
+    def change_status(self, nuevo_estado):
+        self.status = nuevo_estado
+        print(f"Pedido {self.order_id} cambió su estado a {self.status}")
+        self.notify_observers(f"Pedido {self.order_id} cambió su estado a {self.status}")
+```
+
+Incluimos la prueba en el ```main.py```:
+
+```
+pedido = Order(order_id=101, status='Pendiente')
+
+# Crear observadores (se suscriben automáticamente)
+interfaz_usuario = UserInterface(pedido)
+gestion_inventario = InventoryManageInterface(pedido)
+
+# Cambiar estado del pedido y notificar observadores
+pedido.change_status("Procesando")
+pedido.change_status("Enviado")
+
+# Eliminar un observador al destruir el objeto
+del interfaz_usuario
+
+# Cambiar estado del pedido nuevamente
+pedido.change_status("Entregado")
+```
+
+Y el resultado final:
+```
+(venv) rcglezreyes@MacBookAir project_poo % /Users/rcglezreyes/Documents/maestria/OOP/project_poo/venv/bin/python /Users/rcg
+lezreyes/Documents/maestria/OOP/project_poo/main.py
+Pedido 101 cambió su estado a Procesando
+[Gestión de Inventario] Actualizando inventario debido a: Pedido 101 cambió su estado a Procesando
+[Interfaz de Usuario] Notificación recibida: Pedido 101 cambió su estado a Procesando
+Pedido 101 cambió su estado a Enviado
+[Gestión de Inventario] Actualizando inventario debido a: Pedido 101 cambió su estado a Enviado
+[Interfaz de Usuario] Notificación recibida: Pedido 101 cambió su estado a Enviado
+Pedido 101 cambió su estado a Entregado
+[Gestión de Inventario] Actualizando inventario debido a: Pedido 101 cambió su estado a Entregado
+(venv) rcglezreyes@MacBookAir project_poo % 
+```
+
+**A modo de conclusión:**
+
+Clase ```Subject```:
+Gestiona los observadores usando ```WeakSet``` para evitar mantener referencias fuertes a los objetos observadores. Esto permite que los observadores sean eliminados automáticamente por el recolector de basura.
+
+Decorador ```@observer_cls```:
+Añade lógica a las clases decoradas para suscribirse automáticamente al sujeto y eliminarse al ser destruidas.
+
+Observadores concretos (```UserInterface```, ```InventoryManageInterface```):
+Decorados con @observador_clase para simplificar su integración con el patrón ```Observer```.
+
+Ventajas del decorador:
+Simplifica la lógica de registro de observadores.
+Automatiza el manejo de alta y baja de observadores en el sujeto.
+
+Este enfoque aprovecha las herramientas de Python para implementar un sistema de notificaciones robusto, limpio y extensible.
+
+
+
+
+
