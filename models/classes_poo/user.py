@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from models.classes_poo.role import Role
+from models.classes_exception.user_not_authorized_exception import UserNotAuthorizedException
 
 import re
 
@@ -12,8 +13,9 @@ class User:
     phone: str                    # Número de contacto
     role: Role                    # Rol del usuario
     registration_date: datetime   # Fecha de registro en la plataforma
+    authorized: bool
 
-    def __init__(self, user_id=None, username=None, email=None, password=None, phone=None, role=None, registration_date=None):
+    def __init__(self, user_id=None, username=None, email=None, password=None, phone=None, role=None, registration_date=None, authorized=False):
         self.__user_id = user_id
         self.__username = username
         self.__email = email
@@ -21,6 +23,7 @@ class User:
         self.__phone = phone
         self.__role = role
         self.__registration_date = registration_date
+        self.__authorized = authorized
         
     @property
     def email(self) -> str:
@@ -83,6 +86,21 @@ class User:
     @password.setter
     def password(self, password: str) -> None:
         self.__password = password
+        
+    
+    @property
+    def authorized(self) -> bool:
+        return self.__authorized
+    
+    @authorized.setter
+    def authorized(self, authorized: bool):
+        self.__authorized = authorized
+        
     
     def __str__(self):
         return f' \nUser ID: {self.user_id} \nUsername: {self.username} \nEmail: {self.email} \nPhone: {self.phone} \nRole: {self.role} \nRegistration Date: {self.registration_date}'
+    
+    def check_authorization(self):
+        if not self.authorized:
+            raise UserNotAuthorizedException("El usuario no está autorizado para esta operación.")
+        print('Usuario autorizado')

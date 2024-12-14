@@ -19,6 +19,8 @@
 16. [Singleton para Gestión de Configuración](#singleton-para-gestión-de-configuración)
 17. [Factory para Creación de Productos o Usuarios](#factory-para-creación-de-productos-o-usuarios)
 18. [Observer para Notificaciones](#observer-para-notificaciones)
+19. [Manejo de Excepciones](#manejo-de-excepciones)
+20. [Pruebas Unitarias](#pruebas-unitarias)
 
 ## Descripción del Proyecto
 
@@ -53,42 +55,53 @@ La estructura principal del proyecto es la siguiente:
 
 ```plaintext
 ecommerce_system/
-├── main.py                                 # Archivo principal para ejecutar la aplicación
-├── config/                                 # Configuraciones de base de datos y parámetros generales
-├── controllers/                            # Lógica de negocio para gestión de productos, usuarios, etc.
-├── models/                                 # Clases y estructuras de datos (Producto, Usuario, Pedido)
-│   ├── classes_abstraction_interfaces/     # Clases relacionadas con el tema de Abstracción e Interfaces
-|   |   ├── card_payment.py                 # Clase Proceso de Pago por Tarjeta, implementa interfaz PaymentProcess (Proceso de Pago)
-|   |   ├── digital_inventory_manager.py    # Clase Gestor de Inventario Digital, hereda clase abstracta InventoryManager (Gestor de Inventario)
-|   |   ├── inventory_manager.py            # Clase abstracta InventoryManager (Gestor de Inventario)
-|   |   ├── payment_process.py              # Clase interfaz PaymentProcess (Proceso de Pago)
-|   |   ├── paypal_payment.py               # Clase Proceso de Pago por Paypal, implementa interfaz PaymentProcess (Proceso de Pago)
-|   |   ├── physical_inventory_manager.py   # Clase Gestor de Inventario Físico, hereda clase abstracta InventoryManager (Gestor de Inventario)
+├── main.py                                     # Archivo principal para ejecutar la aplicación
+├── config/                                     # Configuraciones de base de datos y parámetros generales
+├── controllers/                                # Lógica de negocio para gestión de productos, usuarios, etc.
+├── models/                                     # Clases y estructuras de datos (Producto, Usuario, Pedido)
+│   ├── classes_abstraction_interfaces/         # Clases relacionadas con el tema de Abstracción e Interfaces
+|   |   ├── card_payment.py                     # Clase Proceso de Pago por Tarjeta, implementa interfaz PaymentProcess (Proceso de Pago)
+|   |   ├── digital_inventory_manager.py        # Clase Gestor de Inventario Digital, hereda clase abstracta InventoryManager (Gestor de Inventario)
+|   |   ├── inventory_manager.py                # Clase abstracta InventoryManager (Gestor de Inventario)
+|   |   ├── payment_process.py                  # Clase interfaz PaymentProcess (Proceso de Pago)
+|   |   ├── paypal_payment.py                   # Clase Proceso de Pago por Paypal, implementa interfaz PaymentProcess (Proceso de Pago)
+|   |   ├── physical_inventory_manager.py       # Clase Gestor de Inventario Físico, hereda clase abstracta InventoryManager (Gestor de Inventario)
+|   ├── classes_exception/
+|   |   ├── failed_paid_exception.py            # Clase Excepción para Pago Fallido
+|   |   ├── insufficent_inventory_exception.py  # Clase Excepción para Inventario Insuficiente
+|   |   ├── invalid_category_exception.py       # Clase Excepción para Categoría Inválida
+|   |   ├── user_not_authorized_exception.py    # Clase Excepción para Usuario no Autorizado
 │   ├── classes_pattern_factory/
-|   |   ├── entity_factory.py               # Clase Fábrica de Entidades (EntityFactory)
+|   |   ├── entity_factory.py                   # Clase Fábrica de Entidades (EntityFactory)
 |   ├── classes_pattern_observer/
-|   |   ├── inventory_manage_interface.py   # Clase Interfaz Gestion de Inventario (InventoryManageInterface)
-|   |   ├── observer_cls.py                 # Función para decorador/anotador @observer_cls
-|   |   ├── subject.py                      # Clase Subject para registrar el sujeto del observador, usando WeakSet de Python para esta tarea
-|   |   ├── user_interface.py               # Clase Interfaz Usuario (UserInterface)
+|   |   ├── inventory_manage_interface.py       # Clase Interfaz Gestion de Inventario (InventoryManageInterface)
+|   |   ├── observer_cls.py                     # Función para decorador/anotador @observer_cls
+|   |   ├── subject.py                          # Clase Subject para registrar el sujeto del observador, usando WeakSet de Python para esta tarea
+|   |   ├── user_interface.py                   # Clase Interfaz Usuario (UserInterface)
 │   ├── classes_pattern_singleton/
-|   |   ├── decorators.py                   # Script para declaración de decoradores personalizados (se implementa la función singleton como decorador a usar)
-|   |   ├── system_configuration.py         # Clase SystemConfiguration (Configuración de Sistema), definida usando el decorador/anotador @singleton
+|   |   ├── decorators.py                       # Script para declaración de decoradores personalizados (se implementa la función singleton como decorador a usar)
+|   |   ├── system_configuration.py             # Clase SystemConfiguration (Configuración de Sistema), definida usando el decorador/anotador @singleton
 │   ├── classes_poo/
-│   │   ├── administrator.py                # Clase Administrator (hereda de User)
-│   │   ├── category.py                     # Clase Category
-│   │   ├── client.py                       # Clase Client (hereda de User)
-|   │   ├── digital_product.py              # Clase DigitalProduct (hereda de Product)
-|   │   ├── order.py                        # Clase Order
-|   │   ├── payment.py                      # Clase Payment
-|   │   ├── physical_product.py             # Clase PhysicalProduct (hereda de Product)
-|   │   ├── product.py                      # Clase Product
-|   │   ├── role.py                         # Clase Role
-|   │   ├── shopping_cart.py                # Clase Shopping Cart
-|   │   └── user.py                         # Clase User
-├── requirements.txt                        # Listado de dependencias del proyecto
-├── views/                                  # Interfaces gráficas de PyQt5
-└── README.md                               # Documentación del proyecto
+│   │   ├── administrator.py                    # Clase Administrator (hereda de User)
+│   │   ├── category.py                         # Clase Category
+│   │   ├── client.py                           # Clase Client (hereda de User)
+|   │   ├── digital_product.py                  # Clase DigitalProduct (hereda de Product)
+|   │   ├── order.py                            # Clase Order
+|   │   ├── payment.py                          # Clase Payment
+|   │   ├── physical_product.py                 # Clase PhysicalProduct (hereda de Product)
+|   │   ├── product.py                          # Clase Product
+|   │   ├── role.py                             # Clase Role
+|   │   ├── shopping_cart.py                    # Clase Shopping Cart
+|   │   └── user.py                             # Clase User
+├── requirements.txt                            # Listado de dependencias del proyecto
+├── tests/                                      # Archivos de tests unitarios
+|   ├── .coverage                               # Archivo generado de cobertura al ejecutar comando
+|   ├── test_category.py                        # Archivo de test para Categoría (Category)
+|   ├── test_product.py                         # Archivo de test para Producto (Product and childs)
+|   ├── test_shopping_cart.py                   # Archivo de test para Carro de Compra (Shopping Cart)
+|   ├── test_user.py                            # Archivo de test para Usuario (User)
+├── views/                                      # Interfaces gráficas de PyQt5
+└── README.md                                   # Documentación del proyecto
 ```
 
 ### Comandos
@@ -1166,6 +1179,304 @@ Automatiza el manejo de alta y baja de observadores en el sujeto.
 Este enfoque aprovecha las herramientas de Python para implementar un sistema de notificaciones robusto, limpio y extensible.
 
 
+## Manejo de Excepciones
 
+En Python, el manejo de excepciones es un mecanismo que permite controlar errores que ocurren durante la ejecución de un programa, como dividir entre cero o intentar acceder a un archivo inexistente. Esto se logra mediante el uso de bloques de código específicos para capturar y responder a las excepciones.
 
+Conceptos Básicos
+1. Excepción: Un evento que interrumpe el flujo normal del programa cuando ocurre un error.
+2. Raising (lanzar): Cuando el programa detecta un error, lanza una excepción usando la palabra clave ```raise```.
+3. Catching (capturar): El error lanzado puede ser manejado con un bloque ```try-except```.
 
+Para este proyecto se crearon las clases que heredan de ```Exception``` de Python, las mismas están definidas en la carpeta ```models/classes_exception```:
+
+```
+class FailedPaidException(Exception):
+    """Se lanza cuando ocurre un error en el procesamiento del pago."""
+    def __init__(self, mensaje="El pago no pudo ser procesado."):
+        super().__init__(mensaje)
+```
+```
+class InsufficentInventoryException(Exception):
+    """Se lanza cuando no hay suficiente inventario para completar la compra."""
+    def __init__(self, mensaje="Inventario insuficiente para el producto solicitado."):
+        super().__init__(mensaje)
+```
+```
+class InvalidCategoryException(Exception):
+    """Excepción personalizada para errores en la categoría."""
+    def __init__(self, mensaje="Categoría no válida."):
+        super().__init__(mensaje)
+```
+```
+class UserNotAuthorizedException(Exception):
+    """Se lanza cuando un usuario no autorizado intenta realizar una acción restringida."""
+    def __init__(self, mensaje="Usuario no autorizado para realizar esta acción."):
+        super().__init__(mensaje)
+```
+
+Luego se incluyen las mismas en el resto de clases donde es necesario el uso para la validación y rigurosidad del funcionamiento del sistema:
+
+```
+from models.classes_exception.failed_paid_exception import FailedPaidException
+
+class Order(Subject):
+    ...
+        
+    def process_pay(self, product, quantity):
+        if self.payment_method.method_name != "tarjeta":
+            raise FailedPaidException("El método de pago no es válido. Solo se aceptan tarjetas.")
+        product.reduce_stock(quantity)       
+        return "Pago procesado exitosamente."
+
+```
+```
+from models.classes_exception.insufficent_inventory_exception import InsufficentInventoryException
+from abc import ABC, abstractmethod
+
+class Product(ABC):
+    ...
+    
+    def reduce_stock(self, quantity):
+        if quantity > self.stock:
+            raise InsufficentInventoryException(
+                f"Solo hay {self.stock} unidades disponibles del producto '{self.name}'."
+            )
+        self.stock -= quantity
+```
+```
+from models.classes_exception.invalid_category_exception import InvalidCategoryException
+
+class Category:
+    category_id: int              # ID único de la categoría
+    name: str                     # Nombre de la categoría (ej., "Electrónica", "Ropa")
+    type_list: list[str]          # Lista de tipos dentro de la categoría (ej., ["Smartphones", "Laptops"])
+
+    def __init__(self, category_id, name, type_list):
+        try:
+            # Validación de `category_id`
+            if not isinstance(category_id, int) or category_id <= 0:
+                raise InvalidCategoryException("El category_id debe ser un entero positivo.")
+            
+            # Validación de `name`
+            if not isinstance(name, str) or not name.strip():
+                raise InvalidCategoryException("El nombre de la categoría debe ser una cadena no vacía.")
+            
+            # Validación de `type_list`
+            if not isinstance(type_list, list) or not all(isinstance(tipo, str) for tipo in type_list):
+                raise InvalidCategoryException("type_list debe ser una lista de cadenas.")
+            
+            # Asignación de atributos
+            self.category_id = category_id
+            self.name = name
+            self.type_list = type_list
+
+        except InvalidCategoryException as e:
+            print(f"Error al crear la categoría: {e}")
+            raise
+
+        except Exception as e:
+            print(f"Se produjo un error inesperado: {e}")
+            raise
+```
+```
+from models.classes_exception.user_not_authorized_exception import UserNotAuthorizedException
+
+class User:
+    ...
+    def check_authorization(self):
+        if not self.authorized:
+            raise UserNotAuthorizedException("El usuario no está autorizado para esta operación.")
+        print('Usuario autorizado')
+```
+Ahora se mostrará el uso de las mismas en la ejecución del proyecto:
+
+Para la ```class Order```:
+```
+producto_digital = EntityFactory.create_entity(
+    "producto_digital", name="eBook de Python", price=9.99
+)
+payment_method = PaymentMethod(
+     1, 'PayPal', {'number' : '1234567890', 'expitation_date' : '2021-01-01'}
+)
+pedido = Order(order_id=101, status='Pendiente', payment_method=payment_method)
+pedido.process_pay(product=producto_digital, quantity=4)
+```
+Y el resultado:
+```
+(venv) rcglezreyes@MacBookAir project_poo % /Users/rcglezreyes/Documents/maestria/OOP/project_poo/venv/bin/python /Users/rcglezrey
+es/Documents/maestria/OOP/project_poo/main.py
+Traceback (most recent call last):
+  File "/Users/rcglezreyes/Documents/maestria/OOP/project_poo/main.py", line 193, in <module>
+    pedido.process_pay(product=producto_digital, quantity=4)
+  File "/Users/rcglezreyes/Documents/maestria/OOP/project_poo/models/classes_poo/order.py", line 37, in process_pay
+    raise FailedPaidException("El método de pago no es válido. Solo se aceptan tarjetas.")
+models.classes_exception.failed_paid_exception.FailedPaidException: El método de pago no es válido. Solo se aceptan tarjetas.
+(venv) rcglezreyes@MacBookAir project_poo % 
+```
+En este caso, definimos un método de pago de nombre "PayPal" y en el caso de la excepción, sólo se acepta método de pago de tipo "tarjeta"
+
+Para la clase ```Product```:
+```
+producto_fisico = PhysicalProduct(
+    1, "Laptop", "Laptop física de alta calidad", 20.0, 5, "Electrónica", "https://example.com/laptop.jpg", 2.5, 30, 20, 5
+)
+producto_fisico.reduce_stock(6)
+```
+Y el resultado:
+```
+(venv) rcglezreyes@MacBookAir project_poo % /Users/rcglezreyes/Documents/maestria/OOP/project_poo/venv/bin/python /Users/rcglezrey
+es/Documents/maestria/OOP/project_poo/main.py
+Traceback (most recent call last):
+  File "/Users/rcglezreyes/Documents/maestria/OOP/project_poo/main.py", line 198, in <module>
+    producto_fisico.reduce_stock(6)
+  File "/Users/rcglezreyes/Documents/maestria/OOP/project_poo/models/classes_poo/product.py", line 110, in reduce_stock
+    raise InsufficentInventoryException(
+models.classes_exception.insufficent_inventory_exception.InsufficentInventoryException: Solo hay 5 unidades disponibles del producto 'Laptop'.
+(venv) rcglezreyes@MacBookAir project_poo % 
+```
+En este caso el mensaje está muy bien explicado, pues se creó el Producto con 5 unidades y se está intentando reducir el stock en 6.
+
+Para la clase ```Category``` (dentro del archivo ```models/classes_poo/category.py```), en la misma intentamos el uso de el bloque ```try-catch``` con múltiples excepciones incluidas:
+
+1. Probando con la instancia: ```category = Category('new_cat_01', 'Categoria Especial', ['Especial1', 'Especial2'])```
+Resultado:
+```
+Error al crear la categoría: El category_id debe ser un entero positivo.
+Traceback (most recent call last):
+  File "/Users/rcglezreyes/Documents/maestria/OOP/project_poo/main.py", line 201, in <module>
+    category = Category('new_cat_01', 'Categoria Especial', ['Especial1', 'Especial2'])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rcglezreyes/Documents/maestria/OOP/project_poo/models/classes_poo/category.py", line 12, in __init__
+    raise InvalidCategoryException("El category_id debe ser un entero positivo.")
+models.classes_exception.invalid_category_exception.InvalidCategoryException: El category_id debe ser un entero positivo.
+```
+2. Probando con la instancia: ```category = Category(category_id=5, name='', type_list=[])```
+Resultado:
+```
+Error al crear la categoría: El nombre de la categoría debe ser una cadena no vacía.
+Traceback (most recent call last):
+  File "/Users/rcglezreyes/Documents/maestria/OOP/project_poo/main.py", line 201, in <module>
+    category = Category(category_id=5, name='', type_list=[])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rcglezreyes/Documents/maestria/OOP/project_poo/models/classes_poo/category.py", line 16, in __init__
+    raise InvalidCategoryException("El nombre de la categoría debe ser una cadena no vacía.")
+models.classes_exception.invalid_category_exception.InvalidCategoryException: El nombre de la categoría debe ser una cadena no vacía.
+```
+3. Probando con la instancia: ```category = Category(category_id=5, name='Categoria Especial', type_list=[5, 6])```
+Resultado:
+```
+Error al crear la categoría: type_list debe ser una lista de cadenas.
+Traceback (most recent call last):
+  File "/Users/rcglezreyes/Documents/maestria/OOP/project_poo/main.py", line 201, in <module>
+    category = Category(category_id=5, name='Categoria Especial', type_list=[5, 6])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rcglezreyes/Documents/maestria/OOP/project_poo/models/classes_poo/category.py", line 20, in __init__
+    raise InvalidCategoryException("type_list debe ser una lista de cadenas.")
+models.classes_exception.invalid_category_exception.InvalidCategoryException: type_list debe ser una lista de cadenas.
+```
+
+## Pruebas Unitarias
+
+En Python las pruebas unitarias son un enfoque para probar partes individuales (unidades) de un programa, como funciones, métodos o clases, para asegurarse de que funcionen correctamente de forma aislada.
+
+Librería Usada: ```unittest```
+Python incluye la librería estándar unittest para realizar pruebas unitarias. Esta librería proporciona herramientas para:
+
+1. Crear casos de prueba (test cases).
+2. Configurar y limpiar el entorno antes y después de cada prueba (```setUp``` y ```tearDown```).
+3. Comparar resultados esperados y reales mediante aserciones como ```assertEqual```, ```assertTrue```, etc.
+
+Carpeta ```tests/```
+
+Las pruebas unitarias suelen estar en una carpeta llamada ```tests/```, separada del código fuente.
+La carpeta puede incluir un archivo ```__init__.py``` (aunque opcional en versiones recientes de Python) para ser reconocida como un paquete.
+
+En el caso de nuestro proyecto, incluimos 4 archivos (```test_category.py```, ```test_product.py```, ```test_shopping_cart.py``` y ```test_user.py```) dentro de la carpeta ```/tests```, para probar las pruebas unitarias usando la librería ```unittest```:
+
+Para correr los tests por separado:
+1. ```test_category.py```: comando: ```python -m unittest tests/test_category.py```
+Resultado: 
+```
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+2. ```test_product.py```: comando: ```python -m unittest tests/test_product.py```
+Resultado: 
+```
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.000s
+
+OK
+```
+3. ```test_shopping_cart.py```: comando: ```python -m unittest tests/test_shopping_cart.py```
+Resultado: 
+```
+Producto 'Laptop' agregado al carrito.
+..Producto 'Laptop' agregado al carrito.
+.
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+OK
+```
+4. ```test_user.py```: comando: ```python -m unittest tests/test_user.py```
+Resultado: 
+```
+.Usuario autorizado
+...
+----------------------------------------------------------------------
+Ran 4 tests in 0.000s
+
+OK
+```
+
+**Cobertura**
+
+Para la cobertura de los tests en Python, necesitamos tener la librería ```coverage``` que no viene por defecto con el intérprete. Para ello, ejecutamos el comando:
+```
+pip install coverage
+```
+Luego de tener instalada nuestra librería, ejecutamos los comandos:
+```
+coverage run -m unittest discover -s tests
+coverage report
+```
+Donde se le dice que muestre el reporte de cobertura de todos los archivos de tipo ```test``` que están en la carpeta ```tests``` en la raíz del proyecto. 
+El resultado:
+```
+coverage report
+.......Producto 'Laptop' agregado al carrito.
+..Producto 'Laptop' agregado al carrito.
+..Usuario autorizado
+...
+----------------------------------------------------------------------
+Ran 14 tests in 0.008s
+
+OK
+Name                                                          Stmts   Miss  Cover
+---------------------------------------------------------------------------------
+models/classes_exception/insufficent_inventory_exception.py       3      0   100%
+models/classes_exception/invalid_category_exception.py            3      1    67%
+models/classes_exception/user_not_authorized_exception.py         3      0   100%
+models/classes_poo/category.py                                   22      9    59%
+models/classes_poo/client.py                                     32      8    75%
+models/classes_poo/digital_product.py                            35     10    71%
+models/classes_poo/payment_method.py                             10      4    60%
+models/classes_poo/product.py                                    83     14    83%
+models/classes_poo/role.py                                        8      3    62%
+models/classes_poo/shopping_cart.py                              54     12    78%
+models/classes_poo/user.py                                       80     16    80%
+tests/test_category.py                                           19      1    95%
+tests/test_product.py                                            34      1    97%
+tests/test_shopping_cart.py                                      32      1    97%
+tests/test_user.py                                               27      1    96%
+---------------------------------------------------------------------------------
+TOTAL                                                           445     81    82%
+(venv) rcglezreyes@MacBookAir project_poo % 
+```
+Lo que indica que tenemos un ```82%``` de cobertura de todo njuestro código en casos de prueba.

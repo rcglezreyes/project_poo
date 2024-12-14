@@ -48,7 +48,7 @@ class ShoppingCart:
         self.__total = value
         
     @singledispatchmethod
-    def agregar_producto(self, producto):
+    def agregar_producto(self):
         """Método base (default) para agregar productos."""
         raise NotImplementedError("Tipo no soportado para agregarProducto.")
 

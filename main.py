@@ -182,21 +182,23 @@ from models.classes_pattern_observer.inventory_manage_interface import Inventory
 # print(usuario_cliente.__str__())
 # print(usuario_administrador.__str__())
 
-pedido = Order(order_id=101, status='Pendiente')
 
-# Crear observadores (se suscriben automáticamente)
-interfaz_usuario = UserInterface(pedido)
-gestion_inventario = InventoryManageInterface(pedido)
+# producto_digital = EntityFactory.create_entity(
+#     "producto_digital", name="eBook de Python", price=9.99
+# )
+# payment_method = PaymentMethod(
+#      1, 'PayPal', {'number' : '1234567890', 'expitation_date' : '2021-01-01'}
+# )
+# pedido = Order(order_id=101, status='Pendiente', payment_method=payment_method)
+# pedido.process_pay(product=producto_digital, quantity=4)
 
-# Cambiar estado del pedido y notificar observadores
-pedido.change_status("Procesando")
-pedido.change_status("Enviado")
+# producto_fisico = PhysicalProduct(
+#     1, "Laptop", "Laptop física de alta calidad", 20.0, 5, "Electrónica", "https://example.com/laptop.jpg", 2.5, 30, 20, 5
+# )
+# producto_fisico.reduce_stock(6)
 
-# Eliminar un observador al destruir el objeto
-del interfaz_usuario
 
-# Cambiar estado del pedido nuevamente
-pedido.change_status("Entregado")
+category = Category(category_id=5, name='Categoria Especial', type_list=[5, 6])
 
 
 

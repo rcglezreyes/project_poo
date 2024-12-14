@@ -3,6 +3,7 @@ from models.classes_poo.client import Client
 from models.classes_poo.payment_method import PaymentMethod
 from models.classes_poo.product import Product
 from models.classes_pattern_observer.subject import Subject
+from models.classes_exception.failed_paid_exception import FailedPaidException
 
 
 class Order(Subject):
@@ -30,3 +31,9 @@ class Order(Subject):
         self.status = nuevo_estado
         print(f"Pedido {self.order_id} cambió su estado a {self.status}")
         self.notify_observers(f"Pedido {self.order_id} cambió su estado a {self.status}")
+        
+    def process_pay(self, product, quantity):
+        if self.payment_method.method_name != "tarjeta":
+            raise FailedPaidException("El método de pago no es válido. Solo se aceptan tarjetas.")
+        product.reduce_stock(quantity)       
+        return "Pago procesado exitosamente."

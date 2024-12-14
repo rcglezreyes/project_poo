@@ -1,5 +1,6 @@
 from typing import Any
 from models.classes_poo.category import Category
+from models.classes_exception.insufficent_inventory_exception import InsufficentInventoryException
 from abc import ABC, abstractmethod
 
 
@@ -102,3 +103,11 @@ class Product(ABC):
     def calcular_precio(self) -> float:
         """Método abstracto que debe ser implementado por las subclases."""
         pass
+    
+    
+    def reduce_stock(self, quantity):
+        if quantity > self.stock:
+            raise InsufficentInventoryException(
+                f"Solo hay {self.stock} unidades disponibles del producto '{self.name}'."
+            )
+        self.stock -= quantity
